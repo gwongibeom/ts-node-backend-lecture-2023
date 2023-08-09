@@ -1,5 +1,5 @@
 import { connectDB } from './db'
-import { startSever } from './sever'
+import { startSever } from './server'
 
 async function main (): Promise<void> {
   await connectDB()
