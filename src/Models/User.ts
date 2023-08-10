@@ -7,6 +7,7 @@ interface User {
   id: string
   password: string
   phoneNumber: string
+  email: string
   friendsNumber: number
   inflowPath?: string
   houseAddress?: string
@@ -21,11 +22,17 @@ const userSchema = new Schema<User>({
   id: { type: String, required: true },
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
+  email: { type: String, required: true },
   friendsNumber: { type: Number, required: true },
   inflowPath: { type: String },
-  houseAddress: { type: String },
-  createAt: { type: Date, required: true, default: () => Date.now() },
-  updateAt: { type: Date, required: true, default: () => Date.now() }
+  houseAddress: { type: String }
+}, {
+  versionKey: false,
+  // timestamps: true
+  timestamps: {
+    createdAt: 'createAt',
+    updatedAt: 'updateAt'
+  }
 })
 
-export default model('user', userSchema)
+export default model('User', userSchema)

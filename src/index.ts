@@ -1,9 +1,10 @@
 import { connectDB } from './db'
-import { startSever } from './server'
+import { startServer } from './server'
 
 async function main (): Promise<void> {
   await connectDB()
-  await startSever()
+  await startServer()
+  console.log('Applicaiton is ready!')
 }
 
 main().catch(console.error)

@@ -7,8 +7,3 @@ export function checkId (input: unknown): input is string {
   if (!idRegex.test(input)) return false
   return true
 }
-
-{
-  const result = checkId('k201gun')
-  console.log('r1', result)
-}
