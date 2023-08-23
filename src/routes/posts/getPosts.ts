@@ -8,7 +8,6 @@ const path = '/posts'
 const method = 'post'
 const handler = async (req: Request, res: Response): Promise<Response> => {
   const { page: pageString = '1', limit: limitString = '5' } = req.query
-
   if (!validate.checkString(pageString)) {
     return res.status(400).json({
       errorCode: 'ValidationError',

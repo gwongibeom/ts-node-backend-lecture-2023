@@ -8,8 +8,10 @@ import * as createPostAPI from './routes/posts/createPost'
 import * as getPostsAPI from './routes/posts/getPosts'
 import * as getPostAPI from './routes/posts/getPost'
 import * as getPostsHTMLAPI from './routes/posts/getPostHTML'
-import * as updatePostAPI from './routes/posts/updatepost'
+import * as updatePostAPI from './routes/posts/updatePost'
 import * as deletePostAPI from './routes/posts/deletePost'
+import * as mainPage from './routes/views/index'
+import * as viewPage from './routes/views/view'
 
 interface Route {
   path: string
@@ -26,7 +28,11 @@ const routes: Route[] = [
   getPostAPI,
   getPostsHTMLAPI,
   updatePostAPI,
-  deletePostAPI
+  deletePostAPI,
+
+  // pages
+  mainPage,
+  viewPage
 ]
 
 declare module 'express-session' { // express-session 모듈 안에 있는 type을 수정하겠다.
@@ -38,6 +44,9 @@ declare module 'express-session' { // express-session 모듈 안에 있는 type�
 export async function startServer (): Promise<void> {
   const app = express()
   const upload = multer({ dest: 'static/' })
+
+  app.set('view engine', 'ejs')
+  app.set('views', './src/views')
 
   app.set('trust proxy', 1) // trust first proxy
   app.use(session({
@@ -51,7 +60,7 @@ export async function startServer (): Promise<void> {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
   app.use(upload.fields([{ name: 'ooo' }]))
-  app.use('/static', express.static('static'))
+  app.use('/static', express.static('./src/static'))
 
   routes.forEach(({ path, method, handler }) => {
     app[method](path, (req, res, next) => {
