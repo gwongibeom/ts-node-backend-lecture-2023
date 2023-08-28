@@ -20,7 +20,7 @@
         <% postList.forEach(post => { %>
           <tr>
             <td><%= post.title %></td>
-            <td><a href="/views/<%=post._id%>?origin_page=<%= page %>"><%= post.content %></a></td>
+            <td><a href="/posts/<%=post._id%>/view?origin_page=<%= page %>"><%= post.content %></a></td>
             <td><%= post.viewCount %></td>
             <td><%= post.createAt.toLocaleDateString() %></td>
           </tr>

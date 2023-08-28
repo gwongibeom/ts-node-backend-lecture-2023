@@ -6,7 +6,7 @@ import { encryptPassword } from '../utils/encryptPassword'
 
 const path = '/login'
 const method = 'post'
-const handler = async (req: Request, res: Response): Promise<void> => {
+const handler = async (req: Request, res: Response): Promise<Response> => {
   const { id, password: originalPassword } = req.body
 
   const user = await User.findOne({
@@ -15,11 +15,11 @@ const handler = async (req: Request, res: Response): Promise<void> => {
   })
 
   if (user === null) {
-    return res.redirect('/login?message=아이디와 비밀번호가 맞지 않습니다.')
+    return res.status(400).json({ login: false })
   }
 
   req.session._id = user._id.toString()
-  return res.redirect('/')
+  return res.json({ login: true })
 }
 
 export { path, method, handler }

@@ -16,3 +16,19 @@
     <h1>BLOG</h1>
 
     <div style="height: 15px"></div>
+    <div style="text-align: right;">
+      <% if(typeof user === 'object' && user) { %>
+      <div>
+        <span><%=user.name %>님 반갑습니다!</span>
+        <form action="/logout" method="post">
+          <button type="submit">로그아웃</button>
+        </form>
+      </div>
+      <% } else { %>
+      <div>
+        <a href="/login">로그인</a>
+      </div>
+      <% } %>
+    </div>
+
+    <div style="height: 15px"></div>

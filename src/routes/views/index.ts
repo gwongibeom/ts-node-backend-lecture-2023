@@ -3,6 +3,7 @@
 import { Request, Response } from 'express'
 import * as validate from '../../validate'
 import Post from '../../Models/Post'
+import User from '../../Models/User'
 
 const path = '/'
 const method = 'get'
@@ -25,7 +26,9 @@ const handler = async (req: Request, res: Response): Promise<void> => {
   const totalPageCount = await Post.countDocuments()
   const lastPage = Math.ceil(totalPageCount / limit)
 
-  return res.render('main', { postList, page, lastPage })
+  const user = await User.findOne({ _id: req.session._id })
+
+  return res.render('main', { postList, page, lastPage, user })
 }
 
 export { path, method, handler }

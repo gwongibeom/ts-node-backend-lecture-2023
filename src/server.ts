@@ -1,6 +1,9 @@
 import express from 'express'
 import multer from 'multer'
 import session from 'express-session'
+import methodOveride from 'method-override'
+
+// api
 import * as signupAPI from './routes/signup'
 import * as getUsersAPI from './routes/getUserMe'
 import * as loginAPI from './routes/login'
@@ -10,8 +13,15 @@ import * as getPostAPI from './routes/posts/getPost'
 import * as getPostsHTMLAPI from './routes/posts/getPostHTML'
 import * as updatePostAPI from './routes/posts/updatePost'
 import * as deletePostAPI from './routes/posts/deletePost'
+
+// page
 import * as mainPage from './routes/views/index'
 import * as viewPage from './routes/views/view'
+import * as editPage from './routes/views/edit'
+import * as loginPage from './routes/views/login'
+import * as logoutPage from './routes/logout'
+
+import User from './Models/User'
 
 interface Route {
   path: string
@@ -32,12 +42,21 @@ const routes: Route[] = [
 
   // pages
   mainPage,
-  viewPage
+  viewPage,
+  editPage,
+  loginPage,
+  logoutPage
 ]
 
 declare module 'express-session' { // express-session 모듈 안에 있는 type을 수정하겠다.
   interface SessionData { // express-session 안에 있는 SessionData 값을 만지겠다.
     _id: string
+  }
+}
+
+declare module 'express' { // express 모듈 안에 있는 type을 수정하겠다.
+  interface Request { // express-session 안에 있는 SessionData 값을 만지겠다.
+    user: typeof User
   }
 }
 
@@ -48,6 +67,7 @@ export async function startServer (): Promise<void> {
   app.set('view engine', 'ejs')
   app.set('views', './src/views')
 
+  app.use(methodOveride('_method'))
   app.set('trust proxy', 1) // trust first proxy
   app.use(session({
     secret: 'cat keyboard',
@@ -61,6 +81,19 @@ export async function startServer (): Promise<void> {
   app.use(express.urlencoded({ extended: true }))
   app.use(upload.fields([{ name: 'ooo' }]))
   app.use('/static', express.static('./src/static'))
+
+  app.use((req, res, next) => {
+    if (req.session._id === undefined) return next()
+
+    User.findOne({ _id: req.session._id })
+      .then(user => {
+        // req.user = user
+        next()
+      })
+      .catch(err => {
+        next(err)
+      })
+  })
 
   routes.forEach(({ path, method, handler }) => {
     app[method](path, (req, res, next) => {
