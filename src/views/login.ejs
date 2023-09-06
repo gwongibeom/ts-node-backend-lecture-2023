@@ -8,6 +8,10 @@
     <input type="password" class="login-input" name="password" placeholder="비밀번호">
   </div>
   <div style="height: 10px"></div>
+  <% if (message) { %>
+    <p style="color: red"><%=message%></p>
+  <% } %>
+  <div style="height: 10px"></div>
   <button class="default-button">로그인</button>
 </form>
 <%- include('footer') %>

@@ -23,6 +23,9 @@ import * as logoutPage from './routes/logout'
 
 import User from './Models/User'
 
+import * as deletePostController from './routes/views/deletePostController'
+import * as updatePostController from './routes/views/updatePostController'
+
 interface Route {
   path: string
   method: 'post' | 'get' | 'put' | 'delete'
@@ -45,7 +48,11 @@ const routes: Route[] = [
   viewPage,
   editPage,
   loginPage,
-  logoutPage
+  logoutPage,
+
+  // con
+  deletePostController,
+  updatePostController
 ]
 
 declare module 'express-session' { // express-session 모듈 안에 있는 type을 수정하겠다.
@@ -83,6 +90,28 @@ export async function startServer (): Promise<void> {
   app.use('/static', express.static('./src/static'))
 
   app.use((req, res, next) => {
+    ;(async () => {
+      console.log('middd')
+      const user = await User.findOne({ _id: req.session._id })
+
+      const orignalRender = res.render.bind(res)
+
+      res.render = (fileName: string, renderData?: Record<string, any>) => {
+        return orignalRender(fileName, { user, ...renderData })
+      }
+
+      console.log(user)
+    })()
+      .then(() => {
+        next()
+      })
+      .catch(err => {
+        console.log(err)
+        next()
+      })
+  })
+
+  app.use((req, res, next) => {
     if (req.session._id === undefined) return next()
 
     User.findOne({ _id: req.session._id })
@@ -114,4 +143,5 @@ export async function startServer (): Promise<void> {
     })
   })
   console.log('Server is ready!')
+  console.log(`http://localhost:${port}`)
 }

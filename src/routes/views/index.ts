@@ -8,6 +8,7 @@ import User from '../../Models/User'
 const path = '/'
 const method = 'get'
 const handler = async (req: Request, res: Response): Promise<void> => {
+  console.log('main called')
   let { page: pageString = '1', limit: limitString = '10' } = req.query
 
   if (!validate.checkString(pageString)) {
